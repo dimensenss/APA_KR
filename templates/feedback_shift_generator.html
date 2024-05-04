@@ -1,0 +1,224 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    <div class="container my-3">
+        <div class="row">
+            <div class="col-md-6">
+            <div class="d-flex justify-content-between mb-3 ">
+                <span>
+                    <input type="radio" id="mode_static" name="mode" value="static" checked>
+                    <label for="mode_static">Обрати незвідний поліном</label>
+                    
+                </span>
+                <span>
+                    <input type="radio" id="mode_dynamic" name="mode" value="dynamic">
+                    <label for="mode_dynamic">Ввести поліном</label>
+                </span>
+                
+            </div>
+                <label for="keys">Оберіть ступінь:</label>
+                <select id="keys" onchange="updateValues()" class="form-select my-2">
+                    <option value="" selected disabled hidden>Оберіть ступінь</option>
+                    {% for key in polynomes %}
+                        <option value="{{ key }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
+            
+                
+
+            </div>
+            <div class="col-md-6" id = 'pol_container' style="display: none">
+                <label id="labelPol">Введіть поліном:</label>
+                <div class="input-group" id="inputPolContainer">
+                    <span class="input-group-text">Введіть поліном</span>
+                </div>
+
+                <label id="values_label">Оберіть поліном:</label>
+                <select id="values" class="form-select my-2">
+                    <option value="" selected disabled hidden>Оберіть поліном</option>
+                </select>
+                
+                <label for="inputContainer">Введіть початковий стан:</label>
+                <div class="input-group" id="inputContainer">
+                    <span class="input-group-text">Введіть початковий стан</span>
+
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button onclick="generate_fsg()" id="generateButton" style="display:none;"
+                            class="btn btn-outline-primary w-100 my-2">Створити
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="container result_container my-3 bg-info bg-opacity-10"></div>
+    </div>
+
+
+
+    <script>
+    
+
+        function updateValues() {
+            var values_label = document.getElementById('values_label');
+            if (staticModeRadio.checked) {
+
+                var inputPolContainer = document.getElementById("inputPolContainer");
+                inputPolContainer.innerHTML = ''; // Очищаем контейнер перед добавлением новых инпутов
+                
+                var labelPol = document.getElementById('labelPol');
+                labelPol.style.display = 'none';
+                
+
+                var selectedKey = document.getElementById("keys").value;
+                var valuesSelect = document.getElementById("values");
+                values_label.style.display = 'flex';
+                valuesSelect.style.display = 'flex';
+  
+                valuesSelect.innerHTML = ''; // Очищаем селект перед добавлением новых значений
+                var values = {{ polynomes|safe }}[selectedKey];
+                for (var i = 0; i < values.length; i++) {
+                    var option = document.createElement("option");
+                    option.text = values[i];
+                    valuesSelect.add(option);
+                }
+
+                var inputContainer = document.getElementById("inputContainer");
+                inputContainer.innerHTML = ''; // Очищаем контейнер перед добавлением новых инпутов
+                for (var j = 0; j < selectedKey; j++) {
+                    var input = document.createElement("input");
+                    input.type = "text";
+                    input.name = "input_" + j;
+                    input.className = "form-control my-2 seed";
+                    input.placeholder = "0";
+                    input.value = 0;
+                    input.maxLength = 1;
+                    inputContainer.appendChild(input);
+                }
+
+                // Показываем кнопку "Generate"
+                var generateButton = document.getElementById("generateButton");
+                generateButton.style.display = "block";
+            } 
+            else {
+                var labelPol = document.getElementById('labelPol');
+                labelPol.style.display = 'flex';
+                
+                var valuesSelect = document.getElementById("values");
+                valuesSelect.style.display = 'none';
+                values_label.style.display = 'none';
+
+                var selectedKey = document.getElementById("keys").value;
+                var inputPolContainer = document.getElementById("inputPolContainer");
+                inputPolContainer.innerHTML = ''; // Очищаем контейнер перед добавлением новых инпутов
+                for (var j = 0; j < selectedKey; j++) {
+                    var input_pol = document.createElement("input");
+                    input_pol.type = "text";
+                    input_pol.name = "input_" + j;
+                    input_pol.className = "form-control my-2 pol_seed";
+                    input_pol.placeholder = "0";
+                    input_pol.value = 0;
+                    input_pol.maxLength = 1;
+                    inputPolContainer.appendChild(input_pol);
+                }
+
+                var inputContainer = document.getElementById("inputContainer");
+                inputContainer.innerHTML = ''; // Очищаем контейнер перед добавлением новых инпутов
+                for (var j = 0; j < selectedKey; j++) {
+                    var input = document.createElement("input");
+                    input.type = "text";
+                    input.name = "input_" + j;
+                    input.className = "form-control my-2 seed";
+                    input.placeholder = "0";
+                    input.value = 0;
+                    input.maxLength = 1;
+                    inputContainer.appendChild(input);
+                }
+
+                // Показываем кнопку "Generate"
+                var generateButton = document.getElementById("generateButton");
+                generateButton.style.display = "block";
+            }
+        }
+
+        function generate_fsg() {
+            var mode = 0;
+            var seedInputs = document.querySelectorAll(".seed");
+
+            var seedNumbers = [];
+            seedInputs.forEach(function (input) {
+                var value = parseInt(input.value);
+                if (!isNaN(value)) {
+                    seedNumbers.push(value);
+                }
+            });
+
+
+            if (staticModeRadio.checked) {
+                mode = 1;
+                var valuesSelect = document.getElementById("values").value;
+            }
+            if (dynamicModeRadio.checked) {
+                mode = 2;
+                var seedPolInputs = document.querySelectorAll(".pol_seed");
+
+                var seedPolNumbers = [];
+                seedPolInputs.forEach(function (pol_input) {
+                    pol_value = parseInt(pol_input.value);
+                    if (!isNaN(pol_value)) {
+                        seedPolNumbers.push(pol_value);
+                    }
+                });
+            }
+
+            $.ajax({
+                type: "GET",
+                url: '{% url 'main:create_fsg' %}',
+                data: {
+                    mode: mode,
+                    seedNumbers: seedNumbers,
+                    valuesSelect: valuesSelect,
+                    seedPolNumbers: seedPolNumbers,
+
+                },
+                success: function (data) {
+                    var result_container = $(".result_container");
+                    result_container.html(data.result_container_html);
+
+                },
+
+                error: function (data) {
+                    console.log(data);
+                },
+            });
+        }
+
+
+        var staticModeRadio = document.getElementById('mode_static');
+        var dynamicModeRadio = document.getElementById('mode_dynamic');
+
+        // Обработчик события изменения для радио-батона Static Mode
+        staticModeRadio.addEventListener('change', function () {
+            if (staticModeRadio.checked) {
+                updateValues();
+            }
+        });
+
+        // Обработчик события изменения для радио-батона Dynamic Mode
+        dynamicModeRadio.addEventListener('change', function () {
+            if (dynamicModeRadio.checked) {
+                updateValues();
+            }
+        });
+
+        var keysSelect = document.getElementById('keys');
+
+        keysSelect.addEventListener('change', function () {
+            var pol_container = document.getElementById('pol_container');
+            pol_container.style.display = 'block';
+        });
+
+    </script>
+{% endblock %}
+
+{% block result %}
+{% endblock %}

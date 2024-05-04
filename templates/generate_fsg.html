@@ -1,0 +1,62 @@
+<div class="row">
+    <div class="col-md-6">
+        <h4>Структурна матриця:</h4>
+
+        <table class="table table-bordered border-info">
+            {% for row in struct_matrix %}
+                <tr>
+                    {% for el in row %}
+                        <td>{{ el }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+
+        <h4>Послідовність:</h4>
+        <p class="fw-bold">
+            {% for el in sequence %}
+                {{ el }}
+            {% endfor %}
+        </p>
+        <h4>Вага Хеммінгу: </h4>
+        <p class="fw-bold">{{ hemming_weight }}</p>
+
+        <h4>T: </h4>
+        <p class="fw-bold">{{ t_period }}</p>
+
+        <h4>T(experimental): </h4>
+        <p class="fw-bold">{{ t_exp_period }}</p>
+
+        <h4>Стани послідовності:</h4>
+        <div class="scroll-container">
+            <table class="table table-striped table-hover text-center">
+                <thead>
+                <tr>
+                    <th scope="col">N</th>
+                    <th scope="col">Стан</th>
+                    <th scope="col">N₁₀</th>
+                </tr>
+                </thead>
+                {% for row in biggest_cycle %}
+                    <tr>
+                        {% for el in row %}
+                            <td>{{ el }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+
+    <div class="col-md-6">
+        <h4>АКФ послідовності</h4>
+        <img src="data:image/png;base64,{{ acf_image|safe }}" alt="Plot">
+    
+        
+    </div>
+
+</div>
+
+
+

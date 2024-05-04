@@ -1,0 +1,35 @@
+.a-nav {
+    text-decoration: none !important;
+    color: #000000 !important;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.a-nav:hover {
+    text-decoration: none;
+    color: #3750ff !important;
+}
+.scroll-container {
+    height: 450px; /* Фиксированная высота контейнера */
+    overflow-y: auto; /* Включение вертикальной прокрутки для контейнера */
+}
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main{
+  flex: 1 0 auto;
+}
+footer {
+  flex: 0 0 auto;
+}
+#mode_static + label, #mode_dynamic + label{
+    font-weight: 500;
+    font-size: 24px;
+}

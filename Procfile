@@ -1,0 +1,1 @@
+web gunicorn APA_KR.wsgi.application --log-file -
