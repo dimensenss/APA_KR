@@ -1,1 +1,1 @@
-web gunicorn APA_KR.wsgi.application --log-file -
+web: gunicorn APA_KR.wsgi

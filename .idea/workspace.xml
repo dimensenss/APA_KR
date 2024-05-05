@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0b6196f3-1a7e-4b71-8027-539e7f48c7ea" name="Changes" comment="comm">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Procfile" beforeDir="false" afterPath="$PROJECT_DIR$/Procfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +61,9 @@
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\PROGRAMMING\6 semestr\APA_KR" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\PROGRAMMING\6 semestr\APA_KR\templates" />
     </key>
@@ -121,7 +125,7 @@
       <workItem from="1714404544270" duration="12131000" />
       <workItem from="1714578284152" duration="65000" />
       <workItem from="1714811292054" duration="26666000" />
-      <workItem from="1714911058860" duration="320000" />
+      <workItem from="1714911058860" duration="889000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <option name="closed" value="true" />
@@ -147,7 +151,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714847797125</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="comm">
+      <option name="closed" value="true" />
+      <created>1714911471141</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1714911471141</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
