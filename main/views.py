@@ -176,21 +176,21 @@ def generate_acf_image(sequence):
 
     plt.clf()
 
-    peaks, _ = find_peaks(acf_normalized)
-
-    # Выбираем только наиболее высокие пики и впадины
-    peak_values = acf_normalized[peaks]
-    threshold = 0.9  # Устанавливаем порог в 95% от максимального значения
-    if len(peak_values):
-        peaks = peaks[peak_values > np.percentile(peak_values, 100 * threshold)]
+    # peaks, _ = find_peaks(acf_normalized)
+    #
+    # # Выбираем только наиболее высокие пики и впадины
+    # peak_values = acf_normalized[peaks]
+    # threshold = 0.9  # Устанавливаем порог в 95% от максимального значения
+    # if len(peak_values):
+    #     peaks = peaks[peak_values > np.percentile(peak_values, 100 * threshold)]
     # Строим график АКФ
     plt.plot(lags, acf_normalized, color='tab:green', linewidth=0.5)
     # Отмечаем пики красными треугольниками
-    plt.plot(peaks, acf_normalized[peaks], "r^", markersize=3)
+    # plt.plot(peaks, acf_normalized[peaks], "r^", markersize=3)
     plt.grid(True)
-    # Подписываем значения y для каждого пика
-    for peak in peaks:
-        plt.text(peak, acf_normalized[peak], f'{acf_normalized[peak]:.2f}', ha='right', va='bottom', fontsize=6)
+    # # Подписываем значения y для каждого пика
+    # for peak in peaks:
+    #     plt.text(peak, acf_normalized[peak], f'{acf_normalized[peak]:.2f}', ha='right', va='bottom', fontsize=6)
 
     plt.xlabel('Період')
     plt.ylabel('Нормалізована АКФ')
