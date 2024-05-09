@@ -4,9 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0b6196f3-1a7e-4b71-8027-539e7f48c7ea" name="Changes" comment="comm">
+    <list default="true" id="0b6196f3-1a7e-4b71-8027-539e7f48c7ea" name="Changes" comment="comm 2">
+      <change afterPath="$PROJECT_DIR$/templates/2d_autocorr.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/generate_2d_autocorr.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/generate_2d_autocorr_torus.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Procfile" beforeDir="false" afterPath="$PROJECT_DIR$/Procfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/generate_msg.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/generate_msg.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +57,7 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/PROGRAMMING/6 semestr/APA_KR&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/PROGRAMMING/6 semestr/APA_KR/templates&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -62,6 +69,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\PROGRAMMING\6 semestr\APA_KR\templates" />
       <recent name="D:\PROGRAMMING\6 semestr\APA_KR" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -125,7 +133,12 @@
       <workItem from="1714404544270" duration="12131000" />
       <workItem from="1714578284152" duration="65000" />
       <workItem from="1714811292054" duration="26666000" />
-      <workItem from="1714911058860" duration="889000" />
+      <workItem from="1714911058860" duration="1082000" />
+      <workItem from="1714994373423" duration="1299000" />
+      <workItem from="1715076688117" duration="5000" />
+      <workItem from="1715169947943" duration="49000" />
+      <workItem from="1715256698555" duration="6129000" />
+      <workItem from="1715262861178" duration="1924000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <option name="closed" value="true" />
@@ -159,7 +172,23 @@
       <option name="project" value="LOCAL" />
       <updated>1714911471141</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="comm">
+      <option name="closed" value="true" />
+      <created>1714911952078</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1714911952078</updated>
+    </task>
+    <task id="LOCAL-00006" summary="comm 2">
+      <option name="closed" value="true" />
+      <created>1714994470684</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1714994470684</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -169,15 +198,46 @@
     <MESSAGE value="first" />
     <MESSAGE value="сщьь" />
     <MESSAGE value="comm" />
-    <option name="LAST_COMMIT_MESSAGE" value="comm" />
+    <MESSAGE value="comm 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="comm 2" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>307</line>
-          <option name="timeStamp" value="32" />
+          <line>302</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main/views.py</url>
+          <line>324</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main/views.py</url>
+          <line>524</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main/views.py</url>
+          <line>561</line>
+          <option name="timeStamp" value="39" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main/views.py</url>
+          <line>597</line>
+          <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main/views.py</url>
+          <line>598</line>
+          <option name="timeStamp" value="41" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main/views.py</url>
+          <line>603</line>
+          <option name="timeStamp" value="42" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

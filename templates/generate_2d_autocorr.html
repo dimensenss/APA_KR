@@ -40,6 +40,26 @@
     </div>
 </div>
 
+<div class="d-flex justify-content-between">
+
+    
+<span class="text-center">
+    <h4>АКФ ПВТ</h4>
+    <img src="data:image/png;base64,{{ acf_image_pvt|safe }}" alt="Plot" class="acf-image">
+</span>
+
+    <span class="text-center">
+    <h4>АКФ ПВТ (2)</h4>
+    <img src="data:image/png;base64,{{ acf_image_pvt_var_2|safe }}" alt="Plot" class="acf-image">
+</span>
+    <div class="result_container_torus"></div>
+</div>
+
+
+<button onclick="generate_torus_acf()" id="generateTorusButton"
+        class="btn btn-outline-primary w-100 my-2">Створити Тор станів
+</button>
+
 <div class="row">
     <div class="col-md-6">
         <div class="d-flex flex-row p-2 justify-content-evenly">
@@ -90,16 +110,21 @@
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade"
                     data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true" style="background-color: black; border-radius: 5px;"> </span>
+                <span class="carousel-control-prev-icon" aria-hidden="true"
+                      style="background-color: black; border-radius: 5px;"> </span>
                 <span class="visually-hidden">Previous</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade"
                     data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true" style="background-color: black; border-radius: 5px;"> </span>
+                <span class="carousel-control-next-icon" aria-hidden="true"
+                      style="background-color: black; border-radius: 5px;"> </span>
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-        <div class="scroll-container">
+
+    </div>
+    <div class="col-md-6">
+        <div class="scroll-container-acf">
             <h4>Послідовність:</h4>
             <p>
                 {% for el in sequence %}
@@ -108,8 +133,71 @@
             </p>
         </div>
     </div>
-    <div class="col-md-6">
-        <h4>АКФ послідовності</h4>
-        <img src="data:image/png;base64,{{ acf_image|safe }}" alt="Plot">
-    </div>
 </div>
+<script>
+
+    function generate_torus_acf() {
+        var mode = 0;
+
+
+        var selectedRang = parseInt(document.getElementById("rang").value);
+        var i = document.getElementById("i").value;
+        var j = document.getElementById("j").value;
+        var seedPolANumbers = [];
+        var seedPolBNumbers = [];
+
+        if (staticModeRadio.checked) {
+            mode = 1;
+            var valuesSelect_A = document.getElementById("values_A").value;
+            var valuesSelect_B = document.getElementById("values_B").value;
+        }
+
+        if (dynamicModeRadio.checked) {
+            mode = 2;
+            var seedPolAInputs = document.querySelectorAll(".pol_A_seed");
+            var seedPolBInputs = document.querySelectorAll(".pol_B_seed");
+
+
+            seedPolAInputs.forEach(function (input) {
+                var polA_value = parseInt(input.value);
+                if (!isNaN(polA_value)) {
+                    seedPolANumbers.push(polA_value);
+                }
+            });
+            seedPolBInputs.forEach(function (input) {
+                var polB_value = parseInt(input.value);
+                if (!isNaN(polB_value)) {
+                    seedPolBNumbers.push(polB_value);
+                }
+            });
+        }
+
+
+        // делаем post запрос через ajax не перезагружая страницу
+        $.ajax({
+            type: "GET",
+            url: '{% url 'main:create_torus_autocorr' %}',
+            data: {
+                mode: mode,
+                seedPolAInputs: seedPolANumbers,
+                seedPolBInputs: seedPolBNumbers,
+                valuesSelect_A: valuesSelect_A,
+                valuesSelect_B: valuesSelect_B,
+                selectedRang: selectedRang,
+                i: i,
+                j: j,
+            },
+            success: function (data) {
+                var result_container_torus = $(".result_container_torus");
+                result_container_torus.html(data.result_container_torus_html);
+            },
+
+            error: function (data) {
+                console.log(data);
+            },
+        });
+
+    }
+
+
+</script>

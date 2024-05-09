@@ -1,10 +1,13 @@
 import random
 import re
+from math import sqrt
 
 import numpy as np
 import matplotlib.pyplot as plt
 import io
 import urllib, base64
+
+from scipy import signal
 from scipy.signal import find_peaks
 
 from django.http import HttpResponse, JsonResponse
@@ -83,6 +86,7 @@ def create_S_matrix(r, n, m):
 
 def create_sequence(i, j, A, B, S):
     sequence = []
+    states = []
 
     S_0 = S.copy()
 
@@ -90,13 +94,15 @@ def create_sequence(i, j, A, B, S):
     S_Tnext = np.matmul(V, B % 2) % 2
 
     sequence.append(S[i - 1][j - 1])
+    states.append(S_Tnext)
 
     while not np.array_equal(S_0, S_Tnext):
         sequence.append(S_Tnext[i - 1][j - 1])
         V = np.matmul(A % 2, S_Tnext % 2) % 2
         S_Tnext = np.matmul(V, B % 2) % 2
+        states.append(S_Tnext)
 
-    return sequence
+    return sequence, states
 
 
 def get_polynomial(str_pol):
@@ -160,8 +166,8 @@ def normalize_acf(acf, sequence):
 
 def normalize_seq(seq):
     for i in range(len(seq)):
-        if seq[i]:
-            continue
+        if not seq[i]:
+            seq[i] = 1
         else:
             seq[i] = -1
     return np.array(seq)
@@ -176,21 +182,10 @@ def generate_acf_image(sequence):
 
     plt.clf()
 
-    # peaks, _ = find_peaks(acf_normalized)
-    #
-    # # Выбираем только наиболее высокие пики и впадины
-    # peak_values = acf_normalized[peaks]
-    # threshold = 0.9  # Устанавливаем порог в 95% от максимального значения
-    # if len(peak_values):
-    #     peaks = peaks[peak_values > np.percentile(peak_values, 100 * threshold)]
-    # Строим график АКФ
+
     plt.plot(lags, acf_normalized, color='tab:green', linewidth=0.5)
-    # Отмечаем пики красными треугольниками
-    # plt.plot(peaks, acf_normalized[peaks], "r^", markersize=3)
+
     plt.grid(True)
-    # # Подписываем значения y для каждого пика
-    # for peak in peaks:
-    #     plt.text(peak, acf_normalized[peak], f'{acf_normalized[peak]:.2f}', ha='right', va='bottom', fontsize=6)
 
     plt.xlabel('Період')
     plt.ylabel('Нормалізована АКФ')
@@ -208,13 +203,16 @@ def generate_acf_image(sequence):
     return image_base64
 
 
-
-
 def feedback_shift_generator(request):
     return render(request, 'feedback_shift_generator.html', context={'polynomes': polynomes_dict})
 
+
 def matrix_shift_register(request):
     return render(request, 'matrix_shift_register.html', context={'polynomes': polynomes_dict})
+
+
+def autocorr(request):
+    return render(request, '2d_autocorr.html', context={'polynomes': polynomes_dict})
 
 
 def create_feedback_shift_generator(request):
@@ -302,7 +300,7 @@ def create_matrix_shift_register(request):
     struct_matrix_B = create_struct_matrix_var_2(len(polynom_coefficients_B), polynom_coefficients_B)
     matrix_S = create_S_matrix(selected_rang, len(polynom_coefficients_A), len(polynom_coefficients_B))
 
-    sequence = create_sequence(selected_i, selected_j, struct_matrix_A, struct_matrix_B, matrix_S)
+    sequence, states = create_sequence(selected_i, selected_j, struct_matrix_A, struct_matrix_B, matrix_S)
 
     if mode == "2":
         t_period_A = 2 ** (len(polynom_coefficients_A)) - 1
@@ -336,6 +334,7 @@ def create_matrix_shift_register(request):
             'struct_matrix_B': struct_matrix_B,
             'matrix_S': matrix_S,
             'sequence': sequence,
+            'states': states,
             't_period_A': t_period_A,
             't_period_B': t_period_B,
             't_period_C': t_period_C,
@@ -351,6 +350,270 @@ def create_matrix_shift_register(request):
     }
 
     return JsonResponse(response_data)
+
+
+def generate_torus(TA, TB, arrA, arrB, S0):
+    torus = []
+    for i in range(TA - 1, -1, -1):
+        for j in range(TB - 1, -1, -1):
+            A = np.linalg.matrix_power(arrA, i) % 2
+            B = np.linalg.matrix_power(arrB, j) % 2
+
+            V = np.matmul(A, S0) % 2
+            state = np.matmul(V, B) % 2
+            torus.append(state)
+    return torus
+
+def normalize_autocorr(autocorr_matrix):
+    n_rows, n_cols = autocorr_matrix.shape
+
+    normalization_factor = 1 / (n_rows * n_cols)
+    norm_autocorr = autocorr_matrix * normalization_factor
+    return norm_autocorr
+
+def generate_two_dim_acf_image(TA, TB, S0, torus):
+    S_num_rows, S_num_cols = S0.shape
+    large_array = np.concatenate([arr.flatten() for arr in torus])
+    num_matrices = len(large_array) // (TA * S_num_rows * TB * S_num_cols)
+    reshaped_matrices = large_array.reshape((num_matrices, TA * S_num_rows, TB * S_num_cols))
+
+
+    xcorr = signal.correlate2d(reshaped_matrices[0], reshaped_matrices[0])
+    xcorr = normalize_autocorr(xcorr)
+
+    plt.clf()
+
+    plt.imshow(xcorr, cmap='hot', interpolation='nearest')
+    plt.colorbar(label='Autocorrelation of state torus ')
+    plt.title('2D Autocorrelation')
+
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+
+    image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+    buffer.close()
+
+    return image_base64
+
+def factorize(value):
+    res = []
+    for x in range(1, int(sqrt(value) + 1)):
+        if not (value % x):
+            res.append([x, value // x])
+    return res[-1]
+
+def create_pvt_matrix(seq, n, m):
+    matrix = np.zeros((n, m))
+
+    i, j = 0, 0
+    for item in seq:
+        matrix[i][j] = item
+        i = (i + 1) % n  # Move down one row
+        j = (j + 1) % m  # Move right one column
+
+    return matrix
+
+
+def create_pvt_matrix_var_2(seq, n, m):
+    seq_array = np.array(seq)
+    matrix = seq_array.reshape((n, m))
+    return matrix
+
+
+def autocorrelation_large(matrix):
+    # Convert the matrix to a NumPy array
+    matrix = np.array(matrix)
+    n_rows, n_cols = matrix.shape
+    # Compute the size of the resulting autocorrelation matrix
+    autocorr_matrix_size = (2 * n_rows - 1, 2 * n_cols - 1)
+    # Initialize the autocorrelation matrix
+    autocorr_matrix = np.zeros(autocorr_matrix_size)
+
+    # Compute the normalization factor
+    normalization_factor = 1 / (n_rows * n_cols)
+
+    # Iterate over each element (i,j) in the autocorrelation matrix
+    for i in range(autocorr_matrix_size[0]):
+        for j in range(autocorr_matrix_size[1]):
+            # Initialize the sum for the current element
+            sum_val = 0
+            # Iterate over each element (m,n) in the original matrix
+            for m in range(n_rows):
+                for n in range(n_cols):
+                    # Calculate the corresponding indices in the original matrix
+                    m_original = m - n_rows + 1 + i
+                    n_original = n - n_cols + 1 + j
+                    # Check if the indices are within bounds
+                    if 0 <= m_original < n_rows and 0 <= n_original < n_cols:
+                        sum_val += matrix[m, n] * matrix[m_original, n_original]
+
+            # Assign the autocorrelation value to the current element
+            autocorr_matrix[i, j] = normalization_factor * sum_val
+
+    # Ensure symmetry by averaging corresponding elements
+    autocorr_matrix = (autocorr_matrix + autocorr_matrix[::-1, ::-1]) / 2
+    return autocorr_matrix
+
+def generate_pvt_acf_image(pvt_matrix):
+    autocorrelation_matrix = autocorrelation_large(pvt_matrix)
+
+    plt.clf()
+
+    plt.imshow(autocorrelation_matrix, cmap='hot', interpolation='nearest')
+    plt.colorbar(label='Autocorrelation of PRA ')
+    plt.title('2D Autocorrelation PRA')
+
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+
+    image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+    buffer.close()
+
+    return image_base64
+
+
+def create_autocorr(request):
+    mode = request.GET.get('mode')
+    if mode == "2":
+        polynom_A = request.GET.getlist('seedPolAInputs[]', [])
+        polynom_B = request.GET.getlist('seedPolBInputs[]', [])
+        polynom_coefficients_A = list(map(int, polynom_A))
+        polynom_coefficients_B = list(map(int, polynom_B))
+    else:
+        polynom_A = request.GET.get('valuesSelect_A')
+        polynom_B = request.GET.get('valuesSelect_B')
+        polynom_coefficients_A = get_polynomial(polynom_A)
+        polynom_coefficients_B = get_polynomial(polynom_B)
+
+    selected_rang = int(request.GET.get('selectedRang'))
+    selected_i = int(request.GET.get('i'))
+    selected_j = int(request.GET.get('j'))
+
+    struct_matrix_A = create_struct_matrix_var_1(len(polynom_coefficients_A), polynom_coefficients_A)
+    struct_matrix_B = create_struct_matrix_var_2(len(polynom_coefficients_B), polynom_coefficients_B)
+    matrix_S = create_S_matrix(selected_rang, len(polynom_coefficients_A), len(polynom_coefficients_B))
+
+    sequence, states = create_sequence(selected_i, selected_j, struct_matrix_A, struct_matrix_B, matrix_S)
+
+    if mode == "2":
+        t_period_A = 2 ** (len(polynom_coefficients_A)) - 1
+        t_period_B = 2 ** (len(polynom_coefficients_B)) - 1
+        t_period_C = len(sequence)
+
+    else:
+        j_1 = 1
+        j_2 = 1
+        match_A = re.search(r'<(\d+)', polynom_A)
+        match_B = re.search(r'<(\d+)', polynom_B)
+        if match_A:
+            j_1 = int(match_A.group(1))
+        if match_B:
+            j_2 = int(match_B.group(1))
+
+        t_period_A = int(calc_t(j_1, len(polynom_coefficients_A)) / gcd(calc_t(j_1, len(polynom_coefficients_A)), j_1))
+        t_period_B = int(calc_t(j_2, len(polynom_coefficients_B)) / gcd(calc_t(j_2, len(polynom_coefficients_B)), j_2))
+        t_period_C = int((t_period_A * t_period_B) / gcd(t_period_A, t_period_B))
+    t_exp_period_C = len(sequence)
+
+    hemming_weight = calculate_hemming_weight(selected_rang, len(polynom_coefficients_A), len(polynom_coefficients_B))
+    hemming_exp_weight = sum(1 for x in sequence if x == 1)
+
+    # image_base64 = generate_acf_image(sequence.copy())
+    # torus = generate_torus(t_period_A, t_period_B, struct_matrix_A, struct_matrix_B, matrix_S)
+    # acf_image_torus = generate_two_dim_acf_image(t_period_A, t_period_B, matrix_S, torus)
+
+    n, m = factorize(len(sequence))
+    norm_sequence = normalize_seq(sequence.copy())
+    pvt_matrix = create_pvt_matrix(norm_sequence, n, m)
+    acf_image_pvt = generate_pvt_acf_image(pvt_matrix)
+
+    pvt_matrix_var2 = create_pvt_matrix_var_2(norm_sequence, n, m)
+    acf_image_pvt_var_2 = generate_pvt_acf_image(pvt_matrix_var2)
+
+
+
+    result_container_html = render_to_string(
+        'generate_2d_autocorr.html', {
+            'struct_matrix_A': struct_matrix_A,
+            'struct_matrix_B': struct_matrix_B,
+            'matrix_S': matrix_S,
+            'sequence': sequence,
+            'states': states,
+            't_period_A': t_period_A,
+            't_period_B': t_period_B,
+            't_period_C': t_period_C,
+            't_exp_period_C': t_exp_period_C,
+            'hemming_weight': hemming_weight,
+            'hemming_exp_weight': hemming_exp_weight,
+            'acf_image_pvt': acf_image_pvt,
+            'acf_image_pvt_var_2': acf_image_pvt_var_2,
+        }, request=request
+    )
+    response_data = {
+        'message': 'Створено послідовність',
+        'result_container_html': result_container_html,
+    }
+
+    return JsonResponse(response_data)
+
+def create_torus_autocorr(request):
+    mode = request.GET.get('mode')
+    if mode == "2":
+        polynom_A = request.GET.getlist('seedPolAInputs[]', [])
+        polynom_B = request.GET.getlist('seedPolBInputs[]', [])
+        polynom_coefficients_A = list(map(int, polynom_A))
+        polynom_coefficients_B = list(map(int, polynom_B))
+    else:
+        polynom_A = request.GET.get('valuesSelect_A')
+        polynom_B = request.GET.get('valuesSelect_B')
+        polynom_coefficients_A = get_polynomial(polynom_A)
+        polynom_coefficients_B = get_polynomial(polynom_B)
+
+    selected_rang = int(request.GET.get('selectedRang'))
+
+    struct_matrix_A = create_struct_matrix_var_1(len(polynom_coefficients_A), polynom_coefficients_A)
+    struct_matrix_B = create_struct_matrix_var_2(len(polynom_coefficients_B), polynom_coefficients_B)
+    matrix_S = create_S_matrix(selected_rang, len(polynom_coefficients_A), len(polynom_coefficients_B))
+
+
+    if mode == "2":
+        t_period_A = 2 ** (len(polynom_coefficients_A)) - 1
+        t_period_B = 2 ** (len(polynom_coefficients_B)) - 1
+
+    else:
+        j_1 = 1
+        j_2 = 1
+        match_A = re.search(r'<(\d+)', polynom_A)
+        match_B = re.search(r'<(\d+)', polynom_B)
+        if match_A:
+            j_1 = int(match_A.group(1))
+        if match_B:
+            j_2 = int(match_B.group(1))
+
+        t_period_A = int(calc_t(j_1, len(polynom_coefficients_A)) / gcd(calc_t(j_1, len(polynom_coefficients_A)), j_1))
+        t_period_B = int(calc_t(j_2, len(polynom_coefficients_B)) / gcd(calc_t(j_2, len(polynom_coefficients_B)), j_2))
+
+    torus = generate_torus(t_period_A, t_period_B, struct_matrix_A, struct_matrix_B, matrix_S)
+    acf_image_torus = generate_two_dim_acf_image(t_period_A, t_period_B, matrix_S, torus)
+
+
+
+
+    result_container_torus_html = render_to_string(
+        'generate_2d_autocorr_torus.html', {
+            'acf_image_torus': acf_image_torus,
+
+        }, request=request
+    )
+    response_data = {
+        'message': 'Створено послідовність',
+        'result_container_torus_html': result_container_torus_html,
+    }
+
+    return JsonResponse(response_data)
+
 
 def index(request):
     return render(request, 'main.html')

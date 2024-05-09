@@ -1,0 +1,305 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    <div class="container my-3">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="d-flex flex-row mb-3">
+                    <input type="radio" id="mode_static" name="mode" value="static" checked>
+                    <label for="mode_static"> Обрати незвідний поліном</label>
+                </div>
+                <label for="keys_A">Оберіть ступінь матриці А:</label>
+                <select id="keys_A" onchange="updateValues_A()" class="form-select my-2">
+                    <option value="" selected disabled hidden>Оберіть ступінь</option>
+                    {% for key in polynomes %}
+                        <option value="{{ key }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
+                <div id="pol_container_A" style="display: none">
+                    <label id="labelPol_A">Введіть поліном A:</label>
+                    <div class="input-group" id="inputPolContainer_A">
+                        <span class="input-group-text">Введіть поліном A</span>
+                    </div>
+
+                    <label id="values_A_label">Оберіть поліном:</label>
+                    <select id="values_A" class="form-select my-2">
+                        <option value="" selected disabled hidden>Оберіть поліном A</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="d-flex flex-row mb-3">
+                    <input type="radio" id="mode_dynamic" name="mode" value="dynamic">
+                    <label for="mode_dynamic">Ввести поліном</label>
+                </div>
+                <label for="keys_B">Оберіть ступінь матриці B:</label>
+                <select id="keys_B" onchange="updateValues_B()" class="form-select my-2">
+                    <option value="" selected disabled hidden>Оберіть ступінь</option>
+                    {% for key in polynomes %}
+                        <option value="{{ key }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
+                <div id="pol_container_B" style="display: none">
+                    <label id="labelPol_B">Введіть поліном B:</label>
+                    <div class="input-group" id="inputPolContainer_B">
+                        <span class="input-group-text">Введіть поліном B</span>
+                    </div>
+
+                    <label id="values_B_label">Оберіть поліном:</label>
+                    <select id="values_B" class="form-select my-2">
+                        <option value="" selected disabled hidden>Оберіть поліном B</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-2 d-flex flex-column justify-content-end pb-2">
+                <label for="rang" id='rang_label' style="display:none;">Оберіть ранг:</label>
+
+                <select id="rang" class="form-select my-2" style="display:none;">
+                    <option value="" selected disabled hidden>Оберіть ранг</option>
+                </select>
+
+                <div class="input-group" id="input-group_i_j" style="display: none;">
+                    <span class="input-group-text">Введіть i, j:</span>
+                    <input id="i" type="text" placeholder="1" value=1 class="form-control">
+                    <input id="j" type="text" placeholder="1" value=1 class="form-control">
+                </div>
+
+            </div>
+
+            <div class="col-md-12 d-flex justify-content-center">
+                <button onclick="generate_msg()" id="generateButton" style="display:none;"
+                        class="btn btn-outline-primary w-100 my-2">Створити
+                </button>
+            </div>
+
+        </div>
+        <div class="container result_container my-3 bg-info bg-opacity-10"></div>
+        
+    </div>
+
+
+
+    <script>
+        function updateValues_A() {
+
+            var selectedKey = document.getElementById("keys_A").value;
+            var labelPol_A = document.getElementById('labelPol_A');
+            var label_values_A = document.getElementById('values_A_label');
+            var valuesSelect = document.getElementById("values_A");
+            var inputPolContainer_A = document.getElementById("inputPolContainer_A");
+            if (staticModeRadio.checked) {
+
+
+                inputPolContainer_A.innerHTML = '';
+                labelPol_A.style.display = 'none';
+                valuesSelect.style.display = 'flex';
+                label_values_A.style.display = 'flex';
+
+                valuesSelect.innerHTML = '';
+
+                var values = {{ polynomes|safe }}[selectedKey];
+                if (values) {
+                    for (var i = 0; i < values.length; i++) {
+                        var option = document.createElement("option");
+                        option.text = values[i];
+                        valuesSelect.add(option);
+                    }
+                }
+            }
+            if (dynamicModeRadio.checked) {
+
+                labelPol_A.style.display = 'flex';
+                valuesSelect.style.display = 'none';
+                label_values_A.style.display = 'none';
+
+                inputPolContainer_A.innerHTML = '';
+                for (var j = 0; j < selectedKey; j++) {
+                    var input_pol = document.createElement("input");
+                    input_pol.type = "text";
+                    input_pol.name = "input_" + j;
+                    input_pol.className = "form-control my-2 pol_A_seed";
+                    input_pol.placeholder = "0";
+                    input_pol.value = 1;
+                    input_pol.maxLength = 1;
+                    inputPolContainer_A.appendChild(input_pol);
+                }
+            }
+        }
+
+        function updateValues_B() {
+
+            var selectedKey = document.getElementById("keys_B").value;
+            var labelPol_B = document.getElementById('labelPol_B');
+            var valuesSelect = document.getElementById("values_B");
+            var inputPolContainer_B = document.getElementById("inputPolContainer_B");
+            var label_values_B = document.getElementById('values_B_label');
+
+            if (staticModeRadio.checked) {
+
+                inputPolContainer_B.innerHTML = '';
+                labelPol_B.style.display = 'none';
+                valuesSelect.style.display = 'flex';
+                label_values_B.style.display = 'flex';
+
+                valuesSelect.innerHTML = '';
+                var values = {{ polynomes|safe }}[selectedKey];
+                if (values) {
+                    for (var i = 0; i < values.length; i++) {
+                        var option = document.createElement("option");
+                        option.text = values[i];
+                        valuesSelect.add(option);
+                    }
+                }
+            }
+            if (dynamicModeRadio.checked) {
+
+                labelPol_B.style.display = 'flex';
+                valuesSelect.style.display = 'none';
+                label_values_B.style.display = 'none';
+
+                inputPolContainer_B.innerHTML = '';
+                for (var j = 0; j < selectedKey; j++) {
+                    var input_pol = document.createElement("input");
+                    input_pol.type = "text";
+                    input_pol.name = "input_" + j;
+                    input_pol.className = "form-control my-2 pol_B_seed";
+                    input_pol.placeholder = "0";
+                    input_pol.value = 1;
+                    input_pol.maxLength = 1;
+                    inputPolContainer_B.appendChild(input_pol);
+                }
+            }
+
+
+            var generateButton = document.getElementById("generateButton");
+            generateButton.style.display = "block";
+            select_rang();
+        }
+
+        var staticModeRadio = document.getElementById('mode_static');
+        var dynamicModeRadio = document.getElementById('mode_dynamic');
+
+        staticModeRadio.addEventListener('change', function () {
+            if (staticModeRadio.checked) {
+                updateValues_A();
+                updateValues_B();
+            }
+        });
+
+        dynamicModeRadio.addEventListener('change', function () {
+            if (dynamicModeRadio.checked) {
+                updateValues_A();
+                updateValues_B();
+            }
+        });
+
+
+        function generate_msg() {
+            var mode = 0;
+
+
+            var selectedRang = parseInt(document.getElementById("rang").value);
+            var i = document.getElementById("i").value;
+            var j = document.getElementById("j").value;
+            var seedPolANumbers = [];
+            var seedPolBNumbers = [];
+
+            if (staticModeRadio.checked) {
+                mode = 1;
+                var valuesSelect_A = document.getElementById("values_A").value;
+                var valuesSelect_B = document.getElementById("values_B").value;
+            }
+
+            if (dynamicModeRadio.checked) {
+                mode = 2;
+                var seedPolAInputs = document.querySelectorAll(".pol_A_seed");
+                var seedPolBInputs = document.querySelectorAll(".pol_B_seed");
+
+
+                seedPolAInputs.forEach(function (input) {
+                    var polA_value = parseInt(input.value);
+                    if (!isNaN(polA_value)) {
+                        seedPolANumbers.push(polA_value);
+                    }
+                });
+                seedPolBInputs.forEach(function (input) {
+                    var polB_value = parseInt(input.value);
+                    if (!isNaN(polB_value)) {
+                        seedPolBNumbers.push(polB_value);
+                    }
+                });
+            }
+
+
+            // делаем post запрос через ajax не перезагружая страницу
+            $.ajax({
+                type: "GET",
+                url: '{% url 'main:create_autocorr' %}',
+                data: {
+                    mode: mode,
+                    seedPolAInputs: seedPolANumbers,
+                    seedPolBInputs: seedPolBNumbers,
+                    valuesSelect_A: valuesSelect_A,
+                    valuesSelect_B: valuesSelect_B,
+                    selectedRang: selectedRang,
+                    i:i,
+                    j:j,
+
+                },
+                success: function (data) {
+                    var result_container = $(".result_container");
+                    result_container.html(data.result_container_html);
+                },
+
+                error: function (data) {
+                    console.log(data);
+                },
+            });
+
+        }
+
+        function select_rang() {
+            var rangSelect = document.getElementById("rang");
+            var rang_label = document.getElementById("rang_label");
+            rangSelect.style.display = "block";
+            rang_label.style.display = "block";
+
+
+            var selectedKey = document.getElementById("keys_A").value;
+
+            rangSelect.innerHTML = '';
+
+            for (var i = 1; i <= selectedKey; i++) {
+                var option = document.createElement("option");
+                option.text = i;
+                option.value = i;
+                rangSelect.appendChild(option);
+            }
+        }
+
+        function select_i_j() {
+            var input_group = document.getElementById("input-group_i_j");
+            input_group.style.display = "flex";
+        }
+
+        var keys_A = document.getElementById("keys_A");
+        var keys_B = document.getElementById("keys_B");
+
+        keys_A.addEventListener("change", function () {
+            var pol_container_A = document.getElementById('pol_container_A');
+            pol_container_A.style.display = 'block';
+            console.log(1);
+            select_rang();
+            select_i_j();
+        });
+
+        keys_B.addEventListener("change", function () {
+            var pol_container_B = document.getElementById('pol_container_B');
+            pol_container_B.style.display = 'block';
+        });
+
+
+    </script>
+{% endblock %}
