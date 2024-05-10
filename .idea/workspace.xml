@@ -4,16 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0b6196f3-1a7e-4b71-8027-539e7f48c7ea" name="Changes" comment="comm 2">
-      <change afterPath="$PROJECT_DIR$/templates/2d_autocorr.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/generate_2d_autocorr.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/generate_2d_autocorr_torus.html" afterDir="false" />
+    <list default="true" id="0b6196f3-1a7e-4b71-8027-539e7f48c7ea" name="Changes" comment="aded 2d_acf">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/generate_msg.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/generate_msg.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +130,9 @@
       <workItem from="1715076688117" duration="5000" />
       <workItem from="1715169947943" duration="49000" />
       <workItem from="1715256698555" duration="6129000" />
-      <workItem from="1715262861178" duration="1924000" />
+      <workItem from="1715262861178" duration="2254000" />
+      <workItem from="1715280876610" duration="6000" />
+      <workItem from="1715330505286" duration="53000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <option name="closed" value="true" />
@@ -188,7 +182,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714994470684</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="aded 2d_acf">
+      <option name="closed" value="true" />
+      <created>1715265003584</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1715265003584</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -199,7 +201,8 @@
     <MESSAGE value="сщьь" />
     <MESSAGE value="comm" />
     <MESSAGE value="comm 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="comm 2" />
+    <MESSAGE value="aded 2d_acf" />
+    <option name="LAST_COMMIT_MESSAGE" value="aded 2d_acf" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

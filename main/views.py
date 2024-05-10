@@ -371,6 +371,41 @@ def normalize_autocorr(autocorr_matrix):
     norm_autocorr = autocorr_matrix * normalization_factor
     return norm_autocorr
 
+
+def autocorrelation_large(matrix):
+    # Convert the matrix to a NumPy array
+    matrix = np.array(matrix)
+    n_rows, n_cols = matrix.shape
+    # Compute the size of the resulting autocorrelation matrix
+    autocorr_matrix_size = (2 * n_rows - 1, 2 * n_cols - 1)
+    # Initialize the autocorrelation matrix
+    autocorr_matrix = np.zeros(autocorr_matrix_size)
+
+    # Compute the normalization factor
+    normalization_factor = 1 / (n_rows * n_cols)
+
+    # Iterate over each element (i,j) in the autocorrelation matrix
+    for i in range(autocorr_matrix_size[0]):
+        for j in range(autocorr_matrix_size[1]):
+            # Initialize the sum for the current element
+            sum_val = 0
+            # Iterate over each element (m,n) in the original matrix
+            for m in range(n_rows):
+                for n in range(n_cols):
+                    # Calculate the corresponding indices in the original matrix
+                    m_original = m - n_rows + 1 + i
+                    n_original = n - n_cols + 1 + j
+                    # Check if the indices are within bounds
+                    if 0 <= m_original < n_rows and 0 <= n_original < n_cols:
+                        sum_val += matrix[m, n] * matrix[m_original, n_original]
+
+            # Assign the autocorrelation value to the current element
+            autocorr_matrix[i, j] = normalization_factor * sum_val
+
+    # Ensure symmetry by averaging corresponding elements
+    autocorr_matrix = (autocorr_matrix + autocorr_matrix[::-1, ::-1]) / 2
+    return autocorr_matrix
+
 def generate_two_dim_acf_image(TA, TB, S0, torus):
     S_num_rows, S_num_cols = S0.shape
     large_array = np.concatenate([arr.flatten() for arr in torus])
@@ -378,8 +413,7 @@ def generate_two_dim_acf_image(TA, TB, S0, torus):
     reshaped_matrices = large_array.reshape((num_matrices, TA * S_num_rows, TB * S_num_cols))
 
 
-    xcorr = signal.correlate2d(reshaped_matrices[0], reshaped_matrices[0])
-    xcorr = normalize_autocorr(xcorr)
+    xcorr = autocorrelation_large(reshaped_matrices[0])
 
     plt.clf()
 
