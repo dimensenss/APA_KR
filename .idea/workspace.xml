@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0b6196f3-1a7e-4b71-8027-539e7f48c7ea" name="Changes" comment="aded 2d_acf">
+    <list default="true" id="0b6196f3-1a7e-4b71-8027-539e7f48c7ea" name="Changes" comment="change torus acf fun">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/generate_2d_autocorr.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/generate_2d_autocorr.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/generate_2d_autocorr_torus.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/generate_2d_autocorr_torus.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,6 +136,14 @@
       <workItem from="1715262861178" duration="2254000" />
       <workItem from="1715280876610" duration="6000" />
       <workItem from="1715330505286" duration="53000" />
+      <workItem from="1715334074162" duration="753000" />
+      <workItem from="1715336393177" duration="317000" />
+      <workItem from="1715338259520" duration="110000" />
+      <workItem from="1715338377984" duration="194000" />
+      <workItem from="1715338622883" duration="233000" />
+      <workItem from="1715340568096" duration="1910000" />
+      <workItem from="1715350384912" duration="2540000" />
+      <workItem from="1715429098227" duration="556000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <option name="closed" value="true" />
@@ -190,7 +201,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715265003584</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="change torus acf fun">
+      <option name="closed" value="true" />
+      <created>1715334196353</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1715334196353</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -202,45 +221,26 @@
     <MESSAGE value="comm" />
     <MESSAGE value="comm 2" />
     <MESSAGE value="aded 2d_acf" />
-    <option name="LAST_COMMIT_MESSAGE" value="aded 2d_acf" />
+    <MESSAGE value="change torus acf fun" />
+    <option name="LAST_COMMIT_MESSAGE" value="change torus acf fun" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>302</line>
+          <line>303</line>
           <option name="timeStamp" value="33" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>324</line>
+          <line>325</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>524</line>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>561</line>
-          <option name="timeStamp" value="39" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>597</line>
-          <option name="timeStamp" value="40" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>598</line>
-          <option name="timeStamp" value="41" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>603</line>
-          <option name="timeStamp" value="42" />
+          <line>700</line>
+          <option name="timeStamp" value="56" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

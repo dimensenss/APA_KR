@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import io
 import urllib, base64
 
+import scipy.signal
 from scipy import signal
 from scipy.signal import find_peaks
 
@@ -372,6 +373,33 @@ def normalize_autocorr(autocorr_matrix):
     return norm_autocorr
 
 
+def autocorrelation(matrix):
+  # Convert the matrix to a NumPy array
+  matrix = np.array(matrix)
+  n_rows, n_cols = matrix.shape
+  # Initialize the autocorrelation matrix
+  autocorr_matrix = np.zeros_like(matrix, dtype=float)
+
+  # Compute the normalization factor
+  normalization_factor = 1 / (n_rows * n_cols)
+
+  # Iterate over each element (i,j) in the autocorrelation matrix
+  for i in range(n_rows):
+    for j in range(n_cols):
+      # Initialize the sum for the current element
+      sum_val = 0
+      # Iterate over each element (m,n) in the original matrix
+      for m in range(n_rows):
+        for n in range(n_cols):
+          # Ensure the shifted element (m+i, n+j) is within bounds
+          if 0 <= m + i < n_rows and 0 <= n + j < n_cols:
+            sum_val += matrix[m, n] * matrix[m + i, n + j]
+
+      # Assign the autocorrelation value to the current element
+      autocorr_matrix[i, j] = normalization_factor * sum_val
+
+  return autocorr_matrix
+
 def autocorrelation_large(matrix):
     # Convert the matrix to a NumPy array
     matrix = np.array(matrix)
@@ -406,14 +434,19 @@ def autocorrelation_large(matrix):
     autocorr_matrix = (autocorr_matrix + autocorr_matrix[::-1, ::-1]) / 2
     return autocorr_matrix
 
-def generate_two_dim_acf_image(TA, TB, S0, torus):
+def generate_two_dim_acf_image(TA, TB, S0, torus, method):
     S_num_rows, S_num_cols = S0.shape
     large_array = np.concatenate([arr.flatten() for arr in torus])
+    large_array = normalize_seq(large_array)
     num_matrices = len(large_array) // (TA * S_num_rows * TB * S_num_cols)
     reshaped_matrices = large_array.reshape((num_matrices, TA * S_num_rows, TB * S_num_cols))
 
-
-    xcorr = autocorrelation_large(reshaped_matrices[0])
+    # _, n_rows, n_cols = reshaped_matrices.shape
+    #
+    # result_matrix = create_pvt_matrix1(large_array, n_rows, n_cols)
+    #
+    xcorr = method(reshaped_matrices[0])
+    # xcorr = signal.correlate2d(reshaped_matrices[0], reshaped_matrices[0])
 
     plt.clf()
 
@@ -436,7 +469,7 @@ def factorize(value):
         if not (value % x):
             res.append([x, value // x])
     return res[-1]
-
+#
 def create_pvt_matrix(seq, n, m):
     matrix = np.zeros((n, m))
 
@@ -447,12 +480,46 @@ def create_pvt_matrix(seq, n, m):
         j = (j + 1) % m  # Move right one column
 
     return matrix
+# def create_pvt_matrix1(seq):
+#     seq_len = len(seq)
+#     # Calculate the dimensions of the matrix
+#     n = int(np.ceil(np.sqrt(seq_len)))
+#     m = int(np.ceil(seq_len / n))
+#     # Initialize the matrix with zeros
+#     matrix = np.zeros((n, m), dtype=object)
+#     # Fill the matrix with the sequence
+#     i, j = 0, 0
+#     for item in seq:
+#         matrix[i][j] = item
+#
+#         # Move down one row and right one column
+#         i = (i + 1) % n
+#         j = (j + 1) % m
+#     return matrix
 
 
 def create_pvt_matrix_var_2(seq, n, m):
     seq_array = np.array(seq)
     matrix = seq_array.reshape((n, m))
     return matrix
+
+def create_pvt_matrix1(seq, n, m):
+    seq_len = len(seq)
+    # Calculate the dimensions of the matrix
+    n = int(np.ceil(np.sqrt(seq_len)))
+    m = int(np.ceil(seq_len / n))
+    # Initialize the matrix with zeros
+    matrix = np.zeros((n, m), dtype=object)
+    # Fill the matrix with the sequence
+    i, j = 0, 0
+    for item in seq:
+        matrix[i][j] = item
+
+        # Move down one row and right one column
+        i = (i + 1) % n
+        j = (j + 1) % m
+    return matrix
+
 
 
 def autocorrelation_large(matrix):
@@ -630,7 +697,8 @@ def create_torus_autocorr(request):
         t_period_B = int(calc_t(j_2, len(polynom_coefficients_B)) / gcd(calc_t(j_2, len(polynom_coefficients_B)), j_2))
 
     torus = generate_torus(t_period_A, t_period_B, struct_matrix_A, struct_matrix_B, matrix_S)
-    acf_image_torus = generate_two_dim_acf_image(t_period_A, t_period_B, matrix_S, torus)
+    acf_image_torus = generate_two_dim_acf_image(t_period_A, t_period_B, matrix_S, torus, autocorrelation_large)
+    acf_image_torus_a = generate_two_dim_acf_image(t_period_A, t_period_B, matrix_S, torus, autocorrelation)
 
 
 
@@ -638,6 +706,7 @@ def create_torus_autocorr(request):
     result_container_torus_html = render_to_string(
         'generate_2d_autocorr_torus.html', {
             'acf_image_torus': acf_image_torus,
+            'acf_image_torus_a': acf_image_torus_a,
 
         }, request=request
     )
