@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0b6196f3-1a7e-4b71-8027-539e7f48c7ea" name="Changes" comment="change torus acf fun">
+    <list default="true" id="0b6196f3-1a7e-4b71-8027-539e7f48c7ea" name="Changes" comment="comm">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/generate_2d_autocorr.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/generate_2d_autocorr.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/generate_2d_autocorr_torus.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/generate_2d_autocorr_torus.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +41,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Django Server.APA_KR.executor&quot;: &quot;Run&quot;,
+    &quot;Django Server.APA_KR.executor&quot;: &quot;Debug&quot;,
     &quot;Python.DZ2.executor&quot;: &quot;Debug&quot;,
     &quot;Python.DZ4.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
@@ -143,7 +141,12 @@
       <workItem from="1715338622883" duration="233000" />
       <workItem from="1715340568096" duration="1910000" />
       <workItem from="1715350384912" duration="2540000" />
-      <workItem from="1715429098227" duration="556000" />
+      <workItem from="1715429098227" duration="2144000" />
+      <workItem from="1715512659660" duration="600000" />
+      <workItem from="1715533381031" duration="180000" />
+      <workItem from="1715534819800" duration="446000" />
+      <workItem from="1715535387042" duration="492000" />
+      <workItem from="1715536394186" duration="55000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <option name="closed" value="true" />
@@ -209,7 +212,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715334196353</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="comm">
+      <option name="closed" value="true" />
+      <created>1715433253609</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1715433253609</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -218,11 +229,11 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first" />
     <MESSAGE value="сщьь" />
-    <MESSAGE value="comm" />
     <MESSAGE value="comm 2" />
     <MESSAGE value="aded 2d_acf" />
     <MESSAGE value="change torus acf fun" />
-    <option name="LAST_COMMIT_MESSAGE" value="change torus acf fun" />
+    <MESSAGE value="comm" />
+    <option name="LAST_COMMIT_MESSAGE" value="comm" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -239,8 +250,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>700</line>
+          <line>703</line>
           <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main/views.py</url>
+          <line>447</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main/views.py</url>
+          <line>523</line>
+          <option name="timeStamp" value="59" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

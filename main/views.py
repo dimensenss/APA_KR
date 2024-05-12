@@ -9,7 +9,7 @@ import urllib, base64
 
 import scipy.signal
 from scipy import signal
-from scipy.signal import find_peaks
+
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -369,36 +369,50 @@ def normalize_autocorr(autocorr_matrix):
     n_rows, n_cols = autocorr_matrix.shape
 
     normalization_factor = 1 / (n_rows * n_cols)
-    norm_autocorr = autocorr_matrix * normalization_factor
+    norm_autocorr = autocorr_matrix * normalization_factor * 4.0
     return norm_autocorr
 
 
+# def autocorrelation(matrix):
+#   # Convert the matrix to a NumPy array
+#   matrix = np.array(matrix)
+#   n_rows, n_cols = matrix.shape
+#   # Initialize the autocorrelation matrix
+#   autocorr_matrix = np.zeros_like(matrix, dtype=float)
+#
+#   # Compute the normalization factor
+#   normalization_factor = 1 / (n_rows * n_cols)
+#
+#   # Iterate over each element (i,j) in the autocorrelation matrix
+#   for i in range(n_rows):
+#     for j in range(n_cols):
+#       # Initialize the sum for the current element
+#       sum_val = 0
+#       # Iterate over each element (m,n) in the original matrix
+#       for m in range(n_rows):
+#         for n in range(n_cols):
+#           # Ensure the shifted element (m+i, n+j) is within bounds
+#           if 0 <= m + i < n_rows and 0 <= n + j < n_cols:
+#             sum_val += matrix[m, n] * matrix[m + i, n + j]
+#
+#       # Assign the autocorrelation value to the current element
+#       autocorr_matrix[i, j] = normalization_factor * sum_val
+#
+#   return autocorr_matrix
+
 def autocorrelation(matrix):
-  # Convert the matrix to a NumPy array
-  matrix = np.array(matrix)
-  n_rows, n_cols = matrix.shape
-  # Initialize the autocorrelation matrix
-  autocorr_matrix = np.zeros_like(matrix, dtype=float)
+    matrix = np.array(matrix)
+    n_rows, n_cols = matrix.shape
+    autocorr_matrix = np.zeros_like(matrix, dtype=float)
 
-  # Compute the normalization factor
-  normalization_factor = 1 / (n_rows * n_cols)
+    normalization_factor = 1 / (n_rows * n_cols)
 
-  # Iterate over each element (i,j) in the autocorrelation matrix
-  for i in range(n_rows):
-    for j in range(n_cols):
-      # Initialize the sum for the current element
-      sum_val = 0
-      # Iterate over each element (m,n) in the original matrix
-      for m in range(n_rows):
-        for n in range(n_cols):
-          # Ensure the shifted element (m+i, n+j) is within bounds
-          if 0 <= m + i < n_rows and 0 <= n + j < n_cols:
-            sum_val += matrix[m, n] * matrix[m + i, n + j]
+    for i in range(n_rows):
+        for j in range(n_cols):
+            sub_matrix = matrix[max(0, -i):n_rows - max(0, i), max(0, -j):n_cols - max(0, j)]
+            autocorr_matrix[i, j] = normalization_factor * np.sum(matrix[max(0, i):n_rows - max(0, -i), max(0, j):n_cols - max(0, -j)] * sub_matrix)
 
-      # Assign the autocorrelation value to the current element
-      autocorr_matrix[i, j] = normalization_factor * sum_val
-
-  return autocorr_matrix
+    return autocorr_matrix
 
 def autocorrelation_large(matrix):
     # Convert the matrix to a NumPy array
@@ -434,7 +448,7 @@ def autocorrelation_large(matrix):
     autocorr_matrix = (autocorr_matrix + autocorr_matrix[::-1, ::-1]) / 2
     return autocorr_matrix
 
-def generate_two_dim_acf_image(TA, TB, S0, torus, method):
+def generate_two_dim_acf_image(TA, TB, S0, torus, method, mode = 0):
     S_num_rows, S_num_cols = S0.shape
     large_array = np.concatenate([arr.flatten() for arr in torus])
     large_array = normalize_seq(large_array)
@@ -443,10 +457,13 @@ def generate_two_dim_acf_image(TA, TB, S0, torus, method):
 
     # _, n_rows, n_cols = reshaped_matrices.shape
     #
-    # result_matrix = create_pvt_matrix1(large_array, n_rows, n_cols)
-    #
-    xcorr = method(reshaped_matrices[0])
-    # xcorr = signal.correlate2d(reshaped_matrices[0], reshaped_matrices[0])
+    # result_matrix = create_pvt_matrix1(large_array)
+
+    if mode:
+        xcorr = method(reshaped_matrices[0])
+    else:
+        xcorr = method(reshaped_matrices[0], reshaped_matrices[0])
+        xcorr = normalize_autocorr(xcorr)
 
     plt.clf()
 
@@ -503,7 +520,7 @@ def create_pvt_matrix_var_2(seq, n, m):
     matrix = seq_array.reshape((n, m))
     return matrix
 
-def create_pvt_matrix1(seq, n, m):
+def create_pvt_matrix1(seq):
     seq_len = len(seq)
     # Calculate the dimensions of the matrix
     n = int(np.ceil(np.sqrt(seq_len)))
@@ -518,8 +535,7 @@ def create_pvt_matrix1(seq, n, m):
         # Move down one row and right one column
         i = (i + 1) % n
         j = (j + 1) % m
-    return matrix
-
+    return np.array(matrix)
 
 
 def autocorrelation_large(matrix):
@@ -697,8 +713,9 @@ def create_torus_autocorr(request):
         t_period_B = int(calc_t(j_2, len(polynom_coefficients_B)) / gcd(calc_t(j_2, len(polynom_coefficients_B)), j_2))
 
     torus = generate_torus(t_period_A, t_period_B, struct_matrix_A, struct_matrix_B, matrix_S)
-    acf_image_torus = generate_two_dim_acf_image(t_period_A, t_period_B, matrix_S, torus, autocorrelation_large)
-    acf_image_torus_a = generate_two_dim_acf_image(t_period_A, t_period_B, matrix_S, torus, autocorrelation)
+
+    acf_image_torus = generate_two_dim_acf_image(t_period_A, t_period_B, matrix_S, torus, scipy.signal.correlate2d, mode = 0)
+    acf_image_torus_a = generate_two_dim_acf_image(t_period_A, t_period_B, matrix_S, torus, autocorrelation, mode = 1)
 
 
 
