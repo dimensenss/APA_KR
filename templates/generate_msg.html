@@ -74,7 +74,7 @@
                 </div>
 
 
-                {% for state in states %}
+                {% for state in states|slice:":50" %}
                     <div class="carousel-item">
                         <table class="table table-bordered border-info">
                             {% for row in state %}

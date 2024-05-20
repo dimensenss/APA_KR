@@ -85,25 +85,28 @@ def create_S_matrix(r, n, m):
                 r -= 1
     return matrix
 
+
 def create_sequence(i, j, A, B, S):
     sequence = []
     states = []
 
     S_0 = S.copy()
 
-    V = np.matmul(A % 2, S % 2) % 2
-    S_Tnext = np.matmul(V, B % 2) % 2
+    V = np.mod(np.dot(A, S), 2)
+    S_Tnext = np.mod(np.dot(V, B), 2)
 
-    sequence.append(S[i - 1][j - 1])
+    sequence.append(S[i - 1, j - 1])
     states.append(S_Tnext)
 
     while not np.array_equal(S_0, S_Tnext):
-        sequence.append(S_Tnext[i - 1][j - 1])
-        V = np.matmul(A % 2, S_Tnext % 2) % 2
-        S_Tnext = np.matmul(V, B % 2) % 2
+        sequence.append(S_Tnext[i - 1, j - 1])
+        V = np.mod(np.dot(A, S_Tnext), 2)
+        S_Tnext = np.mod(np.dot(V, B), 2)
         states.append(S_Tnext)
 
     return sequence, states
+
+
 
 
 def get_polynomial(str_pol):
@@ -181,7 +184,7 @@ def generate_acf_image(sequence):
     acf = np.correlate(sequence, sequence, mode='same')
 
     acf_normalized = normalize_acf(acf, sequence)
-    acf_normalized = clip_negative_values(acf_normalized)
+    # acf_normalized = clip_negative_values(acf_normalized)
     lags = np.arange(len(acf_normalized))
 
     plt.clf()
@@ -382,33 +385,6 @@ def normalize_autocorr(autocorr_matrix):
     return norm_autocorr
 
 
-# def autocorrelation(matrix):
-#   # Convert the matrix to a NumPy array
-#   matrix = np.array(matrix)
-#   n_rows, n_cols = matrix.shape
-#   # Initialize the autocorrelation matrix
-#   autocorr_matrix = np.zeros_like(matrix, dtype=float)
-#
-#   # Compute the normalization factor
-#   normalization_factor = 1 / (n_rows * n_cols)
-#
-#   # Iterate over each element (i,j) in the autocorrelation matrix
-#   for i in range(n_rows):
-#     for j in range(n_cols):
-#       # Initialize the sum for the current element
-#       sum_val = 0
-#       # Iterate over each element (m,n) in the original matrix
-#       for m in range(n_rows):
-#         for n in range(n_cols):
-#           # Ensure the shifted element (m+i, n+j) is within bounds
-#           if 0 <= m + i < n_rows and 0 <= n + j < n_cols:
-#             sum_val += matrix[m, n] * matrix[m + i, n + j]
-#
-#       # Assign the autocorrelation value to the current element
-#       autocorr_matrix[i, j] = normalization_factor * sum_val
-#
-#   return autocorr_matrix
-
 def autocorrelation(matrix):
     matrix = np.array(matrix)
     n_rows, n_cols = matrix.shape
@@ -423,50 +399,12 @@ def autocorrelation(matrix):
 
     return autocorr_matrix
 
-def autocorrelation_large(matrix):
-    # Convert the matrix to a NumPy array
-    matrix = np.array(matrix)
-    n_rows, n_cols = matrix.shape
-    # Compute the size of the resulting autocorrelation matrix
-    autocorr_matrix_size = (2 * n_rows - 1, 2 * n_cols - 1)
-    # Initialize the autocorrelation matrix
-    autocorr_matrix = np.zeros(autocorr_matrix_size)
-
-    # Compute the normalization factor
-    normalization_factor = 1 / (n_rows * n_cols)
-
-    # Iterate over each element (i,j) in the autocorrelation matrix
-    for i in range(autocorr_matrix_size[0]):
-        for j in range(autocorr_matrix_size[1]):
-            # Initialize the sum for the current element
-            sum_val = 0
-            # Iterate over each element (m,n) in the original matrix
-            for m in range(n_rows):
-                for n in range(n_cols):
-                    # Calculate the corresponding indices in the original matrix
-                    m_original = m - n_rows + 1 + i
-                    n_original = n - n_cols + 1 + j
-                    # Check if the indices are within bounds
-                    if 0 <= m_original < n_rows and 0 <= n_original < n_cols:
-                        sum_val += matrix[m, n] * matrix[m_original, n_original]
-
-            # Assign the autocorrelation value to the current element
-            autocorr_matrix[i, j] = normalization_factor * sum_val
-
-    # Ensure symmetry by averaging corresponding elements
-    autocorr_matrix = (autocorr_matrix + autocorr_matrix[::-1, ::-1]) / 2
-    return autocorr_matrix
-
 def generate_two_dim_acf_image(TA, TB, S0, torus, method, mode = 0):
     S_num_rows, S_num_cols = S0.shape
     large_array = np.concatenate([arr.flatten() for arr in torus])
     large_array = normalize_seq(large_array)
     num_matrices = len(large_array) // (TA * S_num_rows * TB * S_num_cols)
     reshaped_matrices = large_array.reshape((num_matrices, TA * S_num_rows, TB * S_num_cols))
-
-    # _, n_rows, n_cols = reshaped_matrices.shape
-    #
-    # result_matrix = create_pvt_matrix1(large_array)
 
     if mode:
         xcorr = method(reshaped_matrices[0])
@@ -489,13 +427,15 @@ def generate_two_dim_acf_image(TA, TB, S0, torus, method, mode = 0):
 
     return image_base64
 
+
 def factorize(value):
     res = []
     for x in range(1, int(sqrt(value) + 1)):
         if not (value % x):
             res.append([x, value // x])
     return res[-1]
-#
+
+
 def create_pvt_matrix(seq, n, m):
     matrix = np.zeros((n, m))
 
@@ -506,22 +446,6 @@ def create_pvt_matrix(seq, n, m):
         j = (j + 1) % m  # Move right one column
 
     return matrix
-# def create_pvt_matrix1(seq):
-#     seq_len = len(seq)
-#     # Calculate the dimensions of the matrix
-#     n = int(np.ceil(np.sqrt(seq_len)))
-#     m = int(np.ceil(seq_len / n))
-#     # Initialize the matrix with zeros
-#     matrix = np.zeros((n, m), dtype=object)
-#     # Fill the matrix with the sequence
-#     i, j = 0, 0
-#     for item in seq:
-#         matrix[i][j] = item
-#
-#         # Move down one row and right one column
-#         i = (i + 1) % n
-#         j = (j + 1) % m
-#     return matrix
 
 
 def create_pvt_matrix_var_2(seq, n, m):
@@ -582,11 +506,12 @@ def autocorrelation_large(matrix):
     return autocorr_matrix
 
 def generate_pvt_acf_image(pvt_matrix):
-    autocorrelation_matrix = autocorrelation_large(pvt_matrix)
 
+    xcorr = scipy.signal.correlate2d(pvt_matrix, pvt_matrix)
+    xcorr = normalize_autocorr(xcorr)
     plt.clf()
 
-    plt.imshow(autocorrelation_matrix, cmap='hot', interpolation='nearest')
+    plt.imshow(xcorr, cmap='hot', interpolation='nearest')
     plt.colorbar(label='Autocorrelation of PRA ')
     plt.title('2D Autocorrelation PRA')
 
