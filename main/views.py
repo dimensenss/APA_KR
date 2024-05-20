@@ -22,15 +22,15 @@ polynomes_dict = {
     4: ['<1 23F>', '<3 37D>'],
     5: ['<1 45E>', '<3 75G>', '<5 67H>'],
     6: ['<1 103F>', '<3 127B>', '<5 147H>', '<7 111A>', '<11 155E>'],
-    7: [''],
-    8: [''],
-    9: [''],
-    10: [''],
-    11: [''],
-    12: [''],
-    13: [''],
-    14: [''],
-    15: [''],
+    7: ['<11 325G>', '<3 217E>', '<5 235E>', '<13 203F>'],
+    8: ['<1 435E>', '<3 567B>', '<5 763D>', '<7 551E>', '<9 675C>'],
+    9: ['<1 1021E>', '<3 1131E>', '<5 1461G>', '<7 1231A>', '<9 1423G>', '<11 1055E>'],
+    10: ['<1 2011E>', '<3 2017B>', '<5 2415E>', '<7 3771G>', '<9 2257B>', '<11 2065A>'],
+    11: ['<1 4005E>', '<3 4445E>', '<5 4215E>', '<9 6015G>', '<11 7413H>', '<13 4143F>'],
+    12: ['<1 10123F>', '<3 12133B>', '<5 10115A>', '<7 12153B>', '<9 11765A>'],
+    13: ['<1 20033F>', '<3 23261E>', '<5 24623F>', '<7 23517F>', '<9 30741G>'],
+    14: ['<1 47103F>', '<3 40547B>', '<5 43333E>', '<7 51761E>', '<9 54055A>'],
+    15: ['<1 100003F>', '<3 102043F>', '<5 110013F>', '<7 125253B>', '<9 102067F>'],
 }
 
 
@@ -262,6 +262,11 @@ def create_feedback_shift_generator(request):
 
         t_period = calc_t(j, len(polynom_coefficients))
 
+    n, m = factorize(len(sequence))
+    norm_sequence = normalize_seq(sequence.copy())
+    pvt_matrix = create_pvt_matrix(norm_sequence, n, m)
+
+    acf_image_pvt = generate_pvt_acf_image(pvt_matrix)
     image_base64 = generate_acf_image(sequence.copy())
 
     result_container_html = render_to_string(
@@ -272,7 +277,8 @@ def create_feedback_shift_generator(request):
             'biggest_cycle': biggest_cycle,
             't_period': t_period,
             't_exp_period': t_exp_period,
-            'acf_image': image_base64
+            'acf_image': image_base64,
+            'acf_image_pvt': acf_image_pvt,
         }, request=request
     )
     response_data = {
