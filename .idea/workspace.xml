@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0b6196f3-1a7e-4b71-8027-539e7f48c7ea" name="Changes" comment="comm">
+    <list default="true" id="0b6196f3-1a7e-4b71-8027-539e7f48c7ea" name="Changes" comment="optimize speed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/views.py" afterDir="false" />
     </list>
@@ -41,7 +41,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Django Server.APA_KR.executor&quot;: &quot;Debug&quot;,
+    &quot;Django Server.APA_KR.executor&quot;: &quot;Run&quot;,
     &quot;Python.DZ2.executor&quot;: &quot;Debug&quot;,
     &quot;Python.DZ4.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
@@ -147,6 +147,12 @@
       <workItem from="1715534819800" duration="446000" />
       <workItem from="1715535387042" duration="492000" />
       <workItem from="1715536394186" duration="55000" />
+      <workItem from="1715536855493" duration="615000" />
+      <workItem from="1715538036498" duration="4000" />
+      <workItem from="1715855114965" duration="661000" />
+      <workItem from="1715938856779" duration="3000" />
+      <workItem from="1716196388048" duration="175000" />
+      <workItem from="1716196759298" duration="323000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <option name="closed" value="true" />
@@ -220,7 +226,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715433253609</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="optimize speed">
+      <option name="closed" value="true" />
+      <created>1715536977892</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1715536977892</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -233,34 +247,35 @@
     <MESSAGE value="aded 2d_acf" />
     <MESSAGE value="change torus acf fun" />
     <MESSAGE value="comm" />
-    <option name="LAST_COMMIT_MESSAGE" value="comm" />
+    <MESSAGE value="optimize speed" />
+    <option name="LAST_COMMIT_MESSAGE" value="optimize speed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>303</line>
+          <line>306</line>
           <option name="timeStamp" value="33" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>325</line>
+          <line>328</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>703</line>
+          <line>720</line>
           <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>447</line>
+          <line>464</line>
           <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main/views.py</url>
-          <line>523</line>
+          <line>540</line>
           <option name="timeStamp" value="59" />
         </line-breakpoint>
       </breakpoints>

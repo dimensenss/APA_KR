@@ -173,12 +173,15 @@ def normalize_seq(seq):
             seq[i] = -1
     return np.array(seq)
 
+def clip_negative_values(acf):
+    return np.maximum(acf, 0)
 
 def generate_acf_image(sequence):
     sequence = normalize_seq(sequence)
     acf = np.correlate(sequence, sequence, mode='same')
 
     acf_normalized = normalize_acf(acf, sequence)
+    acf_normalized = clip_negative_values(acf_normalized)
     lags = np.arange(len(acf_normalized))
 
     plt.clf()
