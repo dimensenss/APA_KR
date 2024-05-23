@@ -11,13 +11,14 @@
                 </tr>
             {% endfor %}
         </table>
-
+<div class="scroll-container">
         <h4>Послідовність:</h4>
         <p class="fw-bold">
             {% for el in sequence %}
                 {{ el }}
             {% endfor %}
         </p>
+</div>
         <h4>Вага Хеммінгу: </h4>
         <p class="fw-bold">{{ hemming_weight }}</p>
 
