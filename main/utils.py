@@ -120,31 +120,6 @@ def get_states(pol):
     return states
 
 
-# def generate_states(states, state_matrix, polynom_coefficients):
-#     j = 0
-#     res = []
-#     for state in state_matrix:
-#         states.remove(state)
-#         j += 1
-#
-#         result = 0
-#         next_state = []
-#         for i, c in enumerate(polynom_coefficients):
-#             if c:
-#                 result += state[i]
-#         next_state.append(result % 2)
-#         next_state.extend(state[:len(state) - 1])
-#         res.append((j, state,int(''.join(map(str, state)), 2)))
-#
-#         if next_state in states:
-#             state_matrix.append(next_state)
-#         else:
-#             state_matrix.clear()
-#             if len(states):
-#                 state_matrix.append(random.choice(states))
-#
-#             return state_matrix, j, res
-
 def generate_states(states, state_matrix, polynom_coefficients):
     j = 0
     res = []
@@ -275,10 +250,42 @@ def generate_two_dim_acf_image(TA, TB, S0, torus, method, mode = 0):
         xcorr = method(reshaped_matrices[0], reshaped_matrices[0])
         xcorr = normalize_autocorr(xcorr)
 
+
     plt.clf()
 
     plt.imshow(xcorr, cmap='hot', interpolation='nearest')
     plt.colorbar(label='Autocorrelation of state torus ')
+    plt.title('2D Autocorrelation')
+
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+
+    image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+    buffer.close()
+
+    return image_base64
+
+
+
+def generate_two_dim_acf_image_min(sequence, states, S):
+    large_arr =[]
+    for state in states:
+        large_arr.extend(state[0])
+        large_arr.extend(state[1:, 0])
+
+
+    n, m = factorize(len(large_arr))
+    large_arr = normalize_seq(large_arr)
+    result_matrix = create_pvt_matrix_var_2(large_arr, n, m)
+
+    xcorr = autocorrelation(result_matrix)
+
+
+    plt.clf()
+
+    plt.imshow(xcorr, cmap='hot', interpolation='nearest')
+    plt.colorbar(label='Autocorrelation of state min torus ')
     plt.title('2D Autocorrelation')
 
     buffer = io.BytesIO()

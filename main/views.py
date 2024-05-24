@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from main.utils import get_polynomial, create_struct_matrix_var_1, get_states, generate_states, calc_t, factorize, \
     create_pvt_matrix, normalize_seq, generate_pvt_acf_image, generate_acf_image, create_struct_matrix_var_2, \
     create_S_matrix, create_sequence, calculate_hemming_weight, gcd, create_pvt_matrix_var_2, generate_torus, \
-    generate_two_dim_acf_image, autocorrelation, polynomes_dict
+    generate_two_dim_acf_image, autocorrelation, polynomes_dict, generate_two_dim_acf_image_min
 
 
 def feedback_shift_generator(request):
@@ -256,6 +256,8 @@ def create_torus_autocorr(request):
         polynom_coefficients_B = get_polynomial(polynom_B)
 
     selected_rang = int(request.GET.get('selectedRang'))
+    selected_i = int(request.GET.get('i'))
+    selected_j = int(request.GET.get('j'))
 
     struct_matrix_A = create_struct_matrix_var_1(len(polynom_coefficients_A), polynom_coefficients_A)
     struct_matrix_B = create_struct_matrix_var_2(len(polynom_coefficients_B), polynom_coefficients_B)
@@ -283,11 +285,14 @@ def create_torus_autocorr(request):
     acf_image_torus = generate_two_dim_acf_image(t_period_A, t_period_B, matrix_S, torus, scipy.signal.correlate2d,
                                                  mode=0)
     acf_image_torus_a = generate_two_dim_acf_image(t_period_A, t_period_B, matrix_S, torus, autocorrelation, mode=1)
+    sequence, states = create_sequence(selected_i, selected_j, struct_matrix_A, struct_matrix_B, matrix_S)
+    acf_image_torus_min = generate_two_dim_acf_image_min(sequence, states, matrix_S)
 
     result_container_torus_html = render_to_string(
         'generate_2d_autocorr_torus.html', {
             'acf_image_torus': acf_image_torus,
             'acf_image_torus_a': acf_image_torus_a,
+            'acf_image_torus_min': acf_image_torus_min,
 
         }, request=request
     )
