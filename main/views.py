@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from main.utils import get_polynomial, create_struct_matrix_var_1, get_states, generate_states, calc_t, factorize, \
     create_pvt_matrix, normalize_seq, generate_pvt_acf_image, generate_acf_image, create_struct_matrix_var_2, \
     create_S_matrix, create_sequence, calculate_hemming_weight, gcd, create_pvt_matrix_var_2, generate_torus, \
-    generate_two_dim_acf_image, autocorrelation, polynomes_dict, generate_two_dim_acf_image_min
+    generate_two_dim_acf_image, autocorrelation, polynomes_dict, generate_two_dim_acf_image_min, create_pvt_matrix1
 
 
 def feedback_shift_generator(request):
@@ -64,9 +64,9 @@ def create_feedback_shift_generator(request):
 
         t_period = calc_t(j, len(polynom_coefficients))
 
-    n, m = factorize(len(sequence))
-    norm_sequence = normalize_seq(sequence.copy())
-    pvt_matrix = create_pvt_matrix(norm_sequence, n, m)
+    _, seq_copy, n, m = factorize(sequence.copy())
+    norm_sequence = normalize_seq(seq_copy)
+    pvt_matrix = create_pvt_matrix_var_2(norm_sequence, n, m)
 
     acf_image_pvt = generate_pvt_acf_image(pvt_matrix)
     image_base64 = generate_acf_image(sequence.copy())
@@ -209,13 +209,17 @@ def create_autocorr(request):
     hemming_weight = calculate_hemming_weight(selected_rang, len(polynom_coefficients_A), len(polynom_coefficients_B))
     hemming_exp_weight = sum(1 for x in sequence if x == 1)
 
-    n, m = factorize(len(sequence))
-    norm_sequence = normalize_seq(sequence.copy())
-    pvt_matrix = create_pvt_matrix(norm_sequence, n, m)
-    acf_image_pvt = generate_pvt_acf_image(pvt_matrix)
+    f, seq_copy, n, m = factorize(sequence.copy())
+    norm_sequence = normalize_seq(seq_copy)
 
     pvt_matrix_var2 = create_pvt_matrix_var_2(norm_sequence, n, m)
     acf_image_pvt_var_2 = generate_pvt_acf_image(pvt_matrix_var2)
+
+    if not f:
+        pvt_matrix = create_pvt_matrix(norm_sequence, n, m)
+        acf_image_pvt = generate_pvt_acf_image(pvt_matrix)
+    else:
+        acf_image_pvt = acf_image_pvt_var_2
 
     result_container_html = render_to_string(
         'generate_2d_autocorr.html', {

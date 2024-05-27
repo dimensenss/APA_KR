@@ -298,13 +298,34 @@ def generate_two_dim_acf_image_min(sequence, states, S):
     return image_base64
 
 
-def factorize(value):
-    res = []
-    for x in range(1, int(sqrt(value) + 1)):
-        if not (value % x):
-            res.append([x, value // x])
-    return res[-1]
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
 
+
+def factorize(sequence):
+    value = len(sequence)
+    f = 0
+    if is_prime(value):
+        value += 1
+        sequence.append(1)
+        f = 1
+
+    res = []
+    for x in range(1, int(sqrt(value)) + 1):
+        if value % x == 0:
+            res.append([x, value // x])
+    return f, sequence, *res[-1]
 
 def create_pvt_matrix(seq, n, m):
     matrix = np.zeros((n, m))
@@ -329,7 +350,7 @@ def create_pvt_matrix1(seq):
     n = int(np.ceil(np.sqrt(seq_len)))
     m = int(np.ceil(seq_len / n))
     # Initialize the matrix with zeros
-    matrix = np.zeros((n, m), dtype=object)
+    matrix = np.zeros((n, m))
     # Fill the matrix with the sequence
     i, j = 0, 0
     for item in seq:
