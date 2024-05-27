@@ -253,7 +253,7 @@ def generate_two_dim_acf_image(TA, TB, S0, torus, method, mode = 0):
 
     plt.clf()
 
-    plt.imshow(xcorr, cmap='hot', interpolation='nearest')
+    plt.imshow(xcorr, cmap='coolwarm', interpolation='nearest')
     plt.colorbar(label='Autocorrelation of state torus ')
     plt.title('2D Autocorrelation')
 
@@ -284,7 +284,7 @@ def generate_two_dim_acf_image_min(sequence, states, S):
 
     plt.clf()
 
-    plt.imshow(xcorr, cmap='hot', interpolation='nearest')
+    plt.imshow(xcorr, cmap='coolwarm', interpolation='nearest')
     plt.colorbar(label='Autocorrelation of state min torus ')
     plt.title('2D Autocorrelation')
 
@@ -370,7 +370,7 @@ def generate_pvt_acf_image(pvt_matrix):
     xcorr = normalize_autocorr(xcorr)
     plt.clf()
 
-    plt.imshow(xcorr, cmap='hot', interpolation='nearest')
+    plt.imshow(xcorr, cmap='coolwarm', interpolation='nearest') #coolwarm binary twilight_shifted
     plt.colorbar(label='Autocorrelation of PRA ')
     plt.title('2D Autocorrelation PRA')
 
