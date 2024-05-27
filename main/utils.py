@@ -275,7 +275,7 @@ def generate_two_dim_acf_image_min(sequence, states, S):
         large_arr.extend(state[1:, 0])
 
 
-    n, m = factorize(len(large_arr))
+    f, seq_copy, n, m = factorize(large_arr)
     large_arr = normalize_seq(large_arr)
     result_matrix = create_pvt_matrix_var_2(large_arr, n, m)
 
@@ -326,6 +326,8 @@ def factorize(sequence):
         if value % x == 0:
             res.append([x, value // x])
     return f, sequence, *res[-1]
+
+
 
 def create_pvt_matrix(seq, n, m):
     matrix = np.zeros((n, m))
