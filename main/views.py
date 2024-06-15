@@ -8,7 +8,8 @@ from django.template.loader import render_to_string
 from main.utils import get_polynomial, create_struct_matrix_var_1, get_states, generate_states, calc_t, factorize, \
     create_pvt_matrix, normalize_seq, generate_pvt_acf_image, generate_acf_image, create_struct_matrix_var_2, \
     create_S_matrix, create_sequence, calculate_hemming_weight, gcd, create_pvt_matrix_var_2, generate_torus, \
-    generate_two_dim_acf_image, autocorrelation, polynomes_dict, generate_two_dim_acf_image_min, create_pvt_matrix1
+    generate_two_dim_acf_image, autocorrelation, polynomes_dict, generate_two_dim_acf_image_min, create_pvt_matrix1, \
+    generate_matrix_acf_image
 
 
 def feedback_shift_generator(request):
@@ -137,7 +138,7 @@ def create_matrix_shift_register(request):
     hemming_weight = calculate_hemming_weight(selected_rang, len(polynom_coefficients_A), len(polynom_coefficients_B))
     hemming_exp_weight = sum(1 for x in sequence if x == 1)
 
-    image_base64 = generate_acf_image(sequence.copy())
+    image_base64 = generate_matrix_acf_image(sequence.copy())
 
     result_container_html = render_to_string(
         'generate_msg.html', {

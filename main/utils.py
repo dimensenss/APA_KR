@@ -185,7 +185,6 @@ def m_autocorrelation(data):
 
   return acf
 
-
 def generate_acf_image(sequence):
     acf = m_autocorrelation(sequence)
 
@@ -216,6 +215,36 @@ def generate_acf_image(sequence):
     buffer.close()
 
     return image_base64
+def generate_matrix_acf_image(sequence):
+    sequence = normalize_seq(sequence)
+    acf = np.correlate(sequence, sequence, mode='same')
+
+    acf_normalized = normalize_acf(acf, sequence)
+    # acf_normalized = clip_negative_values(acf_normalized)
+    lags = np.arange(len(acf_normalized))
+
+    plt.clf()
+
+
+    plt.plot(lags, acf_normalized, color='tab:green', linewidth=0.5)
+
+    plt.grid(True)
+
+    plt.xlabel('Період')
+    plt.ylabel('Нормалізована АКФ')
+    plt.title('АКФ бінарної послідовності')
+
+    # Сохраняем график как изображение в буфере
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+
+    # Преобразуем изображение в строку base64
+    image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+    buffer.close()
+
+    return image_base64
+
 
 def generate_torus(TA, TB, arrA, arrB, S0):
     torus = []
