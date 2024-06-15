@@ -169,21 +169,36 @@ def normalize_seq(seq):
             seq[i] = -1
     return np.array(seq)
 
-def clip_negative_values(acf):
-    return np.maximum(acf, 0)
+def m_autocorrelation(data):
+  acf = []
+  T = len(data)
+  coeficient = 1.0 / T
+
+  for tau in range(T + 1):
+    sum = 0.0
+    for i in range(T):
+      a = 1.0 if data[i] == 0 else -1.0
+      b = 1.0 if data[(i + tau) % T] == 0 else -1.0
+      sum += a * b
+
+    acf.append(coeficient * sum)
+
+  return acf
+
 
 def generate_acf_image(sequence):
-    sequence = normalize_seq(sequence)
-    acf = np.correlate(sequence, sequence, mode='same')
+    acf = m_autocorrelation(sequence)
 
-    acf_normalized = normalize_acf(acf, sequence)
-    # acf_normalized = clip_negative_values(acf_normalized)
-    lags = np.arange(len(acf_normalized))
-
+    lags = np.arange(len(acf))
     plt.clf()
+    min_value = np.min(acf)
 
+    plt.plot(lags, acf, color='tab:green', linewidth=0.5)
 
-    plt.plot(lags, acf_normalized, color='tab:green', linewidth=0.5)
+    min_text = f'min value: {min_value:.4f}'
+    plt.annotate(min_text, xy=(len(lags) / 2, 1),
+                 xytext=(0, 5), textcoords='offset points',
+                 fontsize=10, ha='center', va='top')
 
     plt.grid(True)
 
@@ -201,7 +216,6 @@ def generate_acf_image(sequence):
     buffer.close()
 
     return image_base64
-
 
 def generate_torus(TA, TB, arrA, arrB, S0):
     torus = []
