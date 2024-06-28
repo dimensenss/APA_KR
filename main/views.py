@@ -1,4 +1,6 @@
 import re
+
+import numpy as np
 import scipy.signal
 
 from django.http import JsonResponse
@@ -65,12 +67,23 @@ def create_feedback_shift_generator(request):
 
         t_period = calc_t(j, len(polynom_coefficients))
 
-    _, seq_copy, n, m = factorize(sequence.copy())
+    f, seq_copy, n, m = factorize(sequence.copy())
+
+
     norm_sequence = normalize_seq(seq_copy)
     pvt_matrix = create_pvt_matrix_var_2(norm_sequence, n, m)
 
-    acf_image_pvt = generate_pvt_acf_image(pvt_matrix)
+
+    acf_image_pvt = generate_pvt_acf_image(pvt_matrix, 0)
     image_base64 = generate_acf_image(sequence.copy())
+
+    if not f:
+        pvt_matrix_diagonal = create_pvt_matrix(norm_sequence, n, m)
+        true_acf_image_pvt = generate_pvt_acf_image(np.array(pvt_matrix_diagonal), 1)
+    else:
+        true_acf_image_pvt = None
+
+
 
     result_container_html = render_to_string(
         'generate_fsg.html', {
@@ -82,6 +95,7 @@ def create_feedback_shift_generator(request):
             't_exp_period': t_exp_period,
             'acf_image': image_base64,
             'acf_image_pvt': acf_image_pvt,
+            'true_acf_image_pvt': true_acf_image_pvt,
         }, request=request
     )
     response_data = {

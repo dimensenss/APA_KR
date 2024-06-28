@@ -406,16 +406,39 @@ def create_pvt_matrix1(seq):
         j = (j + 1) % m
     return np.array(matrix)
 
+def autocorrelation_function(b, n1, n2):
+    n = b.size
+    rho = np.full((n1, n2), -1/n)
+    rho[0, 0] = 1
 
-def generate_pvt_acf_image(pvt_matrix):
+    bar_rho = np.zeros((n1, n2))
 
-    xcorr = scipy.signal.correlate2d(pvt_matrix, pvt_matrix)
-    xcorr = normalize_autocorr(xcorr)
+    b_expanded = np.tile(b, (2, 2))
+
+    for i in range(n1):
+        for j in range(n2):
+            brs = b_expanded[:n1, :n2]
+            brsi = b_expanded[i:i+n1, j:j+n2]
+            bar_rho[i, j] = np.sum((-1) ** (brs + brsi)) / n
+
+    return rho, bar_rho
+
+def generate_pvt_acf_image(pvt_matrix, mode = 0):
+    if mode == 0:
+        xcorr = scipy.signal.correlate2d(pvt_matrix, pvt_matrix)
+        xcorr = normalize_autocorr(xcorr)
+    if mode == 1:
+        pvt_matrix = np.where(pvt_matrix == -1, 1, 0)
+        pvt_matrix = np.tile(pvt_matrix, (2, 2))
+        n1, n2 = pvt_matrix.shape
+        _, xcorr = autocorrelation_function(pvt_matrix, n1, n2)
+
     plt.clf()
 
+    min_value = np.min(xcorr)
     plt.imshow(xcorr, cmap='coolwarm', interpolation='nearest') #coolwarm binary twilight_shifted
     plt.colorbar(label='Autocorrelation of PRA ')
-    plt.title('2D Autocorrelation PRA')
+    plt.title(f'2D Autocorrelation PRA\n min value: {min_value:.4f}')
 
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png')

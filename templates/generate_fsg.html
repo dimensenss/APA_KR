@@ -11,14 +11,14 @@
                 </tr>
             {% endfor %}
         </table>
-<div class="scroll-container-seq">
-        <h4>Послідовність:</h4>
-        <p class="fw-bold">
-            {% for el in sequence %}
-                {{ el }}
-            {% endfor %}
-        </p>
-</div>
+        <div class="scroll-container-seq">
+            <h4>Послідовність:</h4>
+            <p class="fw-bold">
+                {% for el in sequence %}
+                    {{ el }}
+                {% endfor %}
+            </p>
+        </div>
         <h4>Вага Хеммінгу: </h4>
         <p class="fw-bold">{{ hemming_weight }}</p>
 
@@ -55,7 +55,12 @@
         <img src="data:image/png;base64,{{ acf_image|safe }}" alt="Plot">
         <h4>2Д АКФ</h4>
         <img src="data:image/png;base64,{{ acf_image_pvt|safe }}" alt="Plot">
-        
+        {% if true_acf_image_pvt %}
+            <h4>MacWilliams АКФ</h4>
+            <img src="data:image/png;base64,{{ true_acf_image_pvt|safe }}" alt="Plot">
+        {% endif %}
+
+
     </div>
 
 </div>
